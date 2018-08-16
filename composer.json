@@ -1,7 +1,8 @@
 {
     "require": {
         "messagebird/php-rest-api": "^1.10",
-        "phpunit/phpunit": "^7.3"
+        "phpunit/phpunit": "^7.3",
+        "ext-sysvmsg": "*"
     },
     "autoload": {
         "psr-4": {
