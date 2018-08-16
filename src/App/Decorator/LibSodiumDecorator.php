@@ -7,14 +7,14 @@ namespace App\Decorator;
  */
 class LibSodiumDecorator implements DecoratorInterface
 {
-    private $publicKey;
+    private $key;
 
-    private $privateKey;
+    private $nonce;
 
-    public function __construct($publicKey, $privateKey = null)
+    public function __construct(string $key, string $nonce)
     {
-        $this->publicKey = $publicKey;
-        $this->privateKey = $privateKey;
+        $this->key = hex2bin($key);
+        $this->nonce = hex2bin($nonce);
     }
     
     /**
@@ -23,10 +23,7 @@ class LibSodiumDecorator implements DecoratorInterface
      */
     public function decorate($data)
     {
-        return sodium_crypto_box_seal(
-            json_encode($data),
-            $this->publicKey
-        );
+        return sodium_crypto_secretbox(json_encode($data), $this->nonce, $this->key);
     }
 
     /**
@@ -35,16 +32,11 @@ class LibSodiumDecorator implements DecoratorInterface
      */
     public function revert($data)
     {
-        $decrypted = sodium_crypto_box_seal_open(
-            $data,
-            $this->privateKey
-        );
+        $converteData = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
+        if ($converteData === false) {
+            throw new Exception("Bad ciphertext");
+        }
 
-        print_r($this->privateKey);
-        
-        print_r($decrypted);
-        exit;
-
-        return json_decode($decrypted, true);
+        return json_decode($converteData, true);
     }
 }
