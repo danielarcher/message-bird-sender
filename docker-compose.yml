@@ -1,0 +1,15 @@
+version: '2'
+services:
+
+  php:
+    build: ./
+    container_name: message-bird-web
+    working_dir: /var/www
+    command: php -S 0.0.0.0:8080
+    ports: 
+      - 8080:8080
+    user: 1000:1000
+    environment:
+      APPLICATION_ENV: development
+    volumes:
+      - ./:/var/www
