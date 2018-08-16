@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Storage\StorageInterface;
 use MessageBird\Client;
 use MessageBird\Objects\Message;
 
@@ -15,7 +16,7 @@ class Sender
      * 
      * @param MessageBird\Client $client 
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, StorageInterface $storage)
     {
         $this->client = $client;
     }
