@@ -24,19 +24,29 @@ class ReceiverController
      * @param  string $messageText 
      * @return void
      */
-    public function post(array $recipients, string $messageText): void
+    public function post(array $recipients, string $messageText): string
     {
-        $storage = new QueueStorage($this->config['queue-id']);
-        $storage->setDecorator(new JsonDecorator());
+        try {
+            $storage = new QueueStorage($this->config['queue-id']);
+            $storage->setDecorator(new JsonDecorator());
 
-        foreach($this->split_message($messageText, $this->config['message-max-size']) as $messagePart) {
-            $storage->add([
-                'originator'  => $this->config['originator'],
-                'recipients'  => $recipients, 
-                'body'        => $messagePart['body'],
-                'type'        => $messagePart['type'],
-                'typeDetails' => $messagePart['typeDetails'],
-            ]);
+            foreach($this->split_message($messageText, $this->config['message-max-size']) as $messagePart) {
+                $storage->add([
+                    'originator'  => $this->config['originator'],
+                    'recipients'  => $recipients, 
+                    'body'        => $messagePart['body'],
+                    'type'        => $messagePart['type'],
+                    'typeDetails' => $messagePart['typeDetails'],
+                ]);
+            }
+
+            http_response_code(202);
+
+            return 'Message queued, thanks!';
+        } catch (\Exception $e) {
+
+            http_response_code(500);
+            return 'Error: '.$e->getMessage();
         }
     }
 
