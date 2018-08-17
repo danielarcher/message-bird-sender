@@ -15,12 +15,22 @@ class UdhTest extends TestCase
         $this->assertEquals(['test' => '01'], $paddedArray);
     }
 
-    public function testConverStringMethod()
+    public function testConverStringPaddedMethod()
     {
-        $ref = mt_rand(1,255);
+        $ref = mt_rand(1,14);
         $udh = new Udh(2,1, $ref);
 
-        $expectedString = '050003'.dechex($ref).'0201';
+        $expectedString = '050003' . '0' . dechex($ref) . '0201';
+        
+        $this->assertEquals($expectedString, $udh->toString());
+    }
+
+    public function testConverStringMethod()
+    {
+        $ref = mt_rand(16,255);
+        $udh = new Udh(2,1, $ref);
+
+        $expectedString = '050003' . dechex($ref) . '0201';
         
         $this->assertEquals($expectedString, $udh->toString());
     }
