@@ -6,6 +6,9 @@ This is a experimental repository to utilize the message bird sdk and api
 php -r "readfile('https://getcomposer.org/installer');" | php
 php composer.phar install --prefer-dist -o
 ```
+Set environment variable `APPLICATION_ENV = 'development'`  
+Change the API key in: config/development.php `__your_key_here__`
+
 
 # Installation with Docker
 ```BASH
@@ -13,7 +16,7 @@ php -r "readfile('https://getcomposer.org/installer');" | php
 docker-compose build php
 docker-compose run php php composer.phar install --prefer-dist -o
 ```
-Access: [localhost:8080](localhost:8080)
+Change the API key in: config/development.php `__your_key_here__`
 
 # Requirements
 - php 7.2
