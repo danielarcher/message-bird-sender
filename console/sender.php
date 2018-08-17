@@ -29,15 +29,11 @@ $storage = new QueueStorage($config['queue-id']);
  * Set Decorator
  */
 $storage->setDecorator(new LibSodiumDecorator($config['sodium-key'], $config['sodium-nonce']));
+#$storage->setDecorator(new JsonDecorator());
 
 $sender = new Sender($messageBirdClient, $config['limit-messages-per-second']);
 
 while (true) {
-
-    /**
-     * Benchmark start
-     */
-    $rustart = getrusage();
 
     $nextMessage = $storage->get();
 
@@ -83,23 +79,5 @@ while (true) {
         $logger->error($e->getMessage(), 500);
     }
 
-    /**
-     * Benchmark result
-     */
-    $ru = getrusage();
-    $logger->debug(sprintf('%s, takes %s ms for compute and spend %s ms in system calls',
-        get_class($decor),
-        rutime($ru, $rustart, "utime"),
-        rutime($ru, $rustart, "stime")
-    ));
-
     $sender->wait();
-}
-
-/**
- * Benchmark helper function
- */
-function rutime($ru, $rus, $index) {
-    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
-     -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
 }
