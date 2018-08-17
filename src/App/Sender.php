@@ -16,9 +16,10 @@ class Sender
      * 
      * @param MessageBird\Client $client 
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, int $throughputLimit)
     {
         $this->client = $client;
+        $this->throughputLimit = $throughputLimit;
     }
 
     /**
@@ -29,5 +30,15 @@ class Sender
     public function sendMessage(Message $message)
     {
         return $this->client->messages->create($message);
+    }
+
+    public function wait()
+    {
+        usleep($this->calcWaitTime());
+    }
+
+    public function calcWaitTime()
+    {
+        return round(1000000 / $this->throughputLimit);
     }
 }
