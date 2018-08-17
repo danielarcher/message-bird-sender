@@ -1,7 +1,7 @@
 <?php 
 
 return [
-	'api-key'                   => 'oCUOTVIzebR0oqnFpE88pAsEy',
+	'api-key'                   => '__your_key_here__',
     'originator'                => 'MessageBird',
     'message-max-size'          => 160,
     'data-file'                 => __DIR__ . '/../data/messages_to_send.txt',
