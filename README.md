@@ -58,5 +58,5 @@ curl -X POST 'http://localhost:8080/' \
 
 # Tests
 ```BASH
-docker exec -it message-bird-web php vendor/bin/phpunit --bootstrap=tests/bootstrap.php tests
+docker exec -it message-bird-web php vendor/bin/phpunit
 ```

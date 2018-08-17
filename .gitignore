@@ -1,4 +1,4 @@
 vendor/
 logs/*.log
 composer.phar
-report/
+tests/_reports/

@@ -24,11 +24,11 @@
     </filter>
 
     <logging>
-        <log type="tap" target="tests/_report/report.tap"/>
-        <log type="junit" target="tests/_report/report.junit.xml"/>
-        <log type="coverage-html" target="tests/_report/coverage"/>
-        <log type="coverage-text" target="tests/_report/coverage.txt"/>
-        <log type="coverage-clover" target="tests/_report/logs/clover.xml"/>
+        <log type="tap" target="tests/_reports/report.tap"/>
+        <log type="junit" target="tests/_reports/report.junit.xml"/>
+        <log type="coverage-html" target="tests/_reports/coverage"/>
+        <log type="coverage-text" target="tests/_reports/coverage.txt"/>
+        <log type="coverage-clover" target="tests/_reports/logs/clover.xml"/>
     </logging>
 
 </phpunit>
