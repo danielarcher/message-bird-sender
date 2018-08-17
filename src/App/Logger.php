@@ -19,23 +19,49 @@ class Logger
         $this->filePath = $filePath;
     }
 
-    public function info($message)
+    /**
+     * Send a info log
+     * @param  string $message 
+     * @return void
+     */
+    public function info(string $message)
     {
         $this->log($message, self::INFO);
     }
 
-    public function debug($message)
+    /**
+     * Send debug log
+     * @param  string $message 
+     * @return void
+     */
+    public function debug(string $message)
     {
         $this->log($message, self::DEBUG);
     }
 
-    public function error($message)
+    /**
+     * Send error log
+     * @param  string $message 
+     * @return void
+     */
+    public function error(string $message, $code)
     {
-        $this->log($message, self::ERROR);
+        $this->log('[code:' . $code . ']' . $message, self::ERROR);
     }
 
+    /**
+     * Save the loged message to a file
+     * @param  string $message 
+     * @param  string $level   
+     * @return void
+     */
     public function log(string $message, string $level)
     {
-        file_put_contents($this->filePath, $level . ':' . $message . "\n", FILE_APPEND);
+        $success = file_put_contents($this->filePath, $level . ':' . $message . "\n", FILE_APPEND);
+        
+        if (false == $success) {
+            throw new \Exception("Error saving the log file, please verify the configuration path");
+            
+        }
     }
 }
