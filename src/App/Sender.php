@@ -16,7 +16,7 @@ class Sender
      * 
      * @param MessageBird\Client $client 
      */
-    public function __construct(Client $client, StorageInterface $storage)
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }

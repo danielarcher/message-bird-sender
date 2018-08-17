@@ -14,7 +14,6 @@ $messageBirdClient = new Client($config['api-key']);
 
 
 $storage = new QueueStorage($config['queue-id']);
-#$storage->setDecorator(new JsonDecorator());
 $sender = new Sender($messageBirdClient, $storage);
 
 while (true) {
