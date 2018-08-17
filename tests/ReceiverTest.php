@@ -43,7 +43,29 @@ class ReceiverTest extends \PHPUnit\Framework\TestCase
                     ->willReturn(true);
 
         $receiver = new Receiver(['message-max-size' => 5], $mockStorage, $mockDecor);
-        $receiver->post([mt_rand()], 'LoremLorem');
+        $response = $receiver->post([mt_rand()], 'LoremLorem');
         
+        $this->assertEquals('Message queued, thanks!', $response);
+    }
+
+    public function testPostExceptionMessage()
+    {
+
+        $mockDecor = $this->getMockBuilder(DecoratorInterface::class)
+                          ->disableOriginalConstructor()
+                          ->getMock(); 
+
+        $mockStorage = $this->getMockBuilder(StorageInterface::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $mockStorage->expects($this->exactly(1))
+                    ->method('add')
+                    ->will($this->throwException(new Exception));
+
+        $receiver = new Receiver(['message-max-size' => 5], $mockStorage, $mockDecor);
+        $response = $receiver->post([mt_rand()], 'LoremLorem');
+        
+        $this->assertEquals('Error: ', $response);
     }
 }
