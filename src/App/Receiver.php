@@ -1,21 +1,25 @@
 <?php 
 
-namespace App\Controller;
+namespace App;
 
+use App\Decorator\DecoratorInterface;
 use App\Decorator\JsonDecorator;
+use App\Decorator\LibSodiumDecorator;
 use App\Storage\QueueStorage;
+use App\Storage\StorageInterface;
 use App\Udh;
 
-class ReceiverController
+class Receiver
 {
     /**
      * create a new controller class, to receive post messages
      * 
      * @param array $config [description]
      */
-    public function __construct(array $config)
+    public function __construct(array $config, StorageInterface $storage)
     {
         $this->config = $config;
+        $this->storage = $storage;
     }
 
     /**
@@ -27,11 +31,12 @@ class ReceiverController
     public function post(array $recipients, string $messageText): string
     {
         try {
-            $storage = new QueueStorage($this->config['queue-id']);
-            $storage->setDecorator(new JsonDecorator());
 
+            /**
+             * Split the message and add to storage
+             */
             foreach($this->split_message($messageText, $this->config['message-max-size']) as $messagePart) {
-                $storage->add([
+                $this->storage->add([
                     'originator'  => $this->config['originator'],
                     'recipients'  => $recipients, 
                     'body'        => $messagePart['body'],
