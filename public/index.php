@@ -2,7 +2,9 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Decorator\LibSodiumDecorator;
 use App\Receiver;
+use App\Storage\QueueStorage;
 
 $env = getenv('APPLICATION_ENV') ?? 'development';
 $config = require __DIR__ . '/../config/' . $env . '.php';
@@ -19,17 +21,16 @@ if ($_POST) {
     /**
      * Storage mode
      */
-    $storage = new QueueStorage($this->config['queue-id']);
+    $storage = new QueueStorage($config['queue-id']);
 
     /**
      * Decorator
      */
-    $storate->setDecorator(new LibSodiumDecorator($this->config['sodium-key'], $this->config['sodium-nonce']));
+    $storage->setDecorator(new LibSodiumDecorator($config['sodium-key'], $config['sodium-nonce']));
 
     $controller = new Receiver($config, $storage, $decorator);
     $response = $controller->post($recipients, $_POST['body']);
 
 }
 
-
-return $response;
+echo $response;
