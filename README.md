@@ -60,3 +60,4 @@ curl -X POST 'http://localhost:8080/' \
 ```BASH
 docker exec -it message-bird-web php vendor/bin/phpunit
 ```
+Coverage will be storaged in `tests/_reports`
