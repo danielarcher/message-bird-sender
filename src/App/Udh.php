@@ -26,12 +26,12 @@ class Udh
      * @param int $total   
      * @param int $current 
      */
-    public function __construct(int $total, int $current)
+    public function __construct(int $total, int $current, int $reference)
     {
         $this->length    = dechex(5);
         $this->iei       = dechex(0);
         $this->iedl      = dechex(3);
-        $this->reference = dechex(mt_rand(1, 255));
+        $this->reference = dechex($reference);
         $this->total     = dechex($total);
         $this->current   = dechex($current); 
     }

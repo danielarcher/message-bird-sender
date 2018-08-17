@@ -3,7 +3,7 @@
 namespace App\Decorator;
 
 /**
- * Json decorator transform all data in json encoded string and revert as an array
+ * Encrypt decorator, transform all data in encrypted message
  */
 class LibSodiumDecorator implements DecoratorInterface
 {
@@ -34,7 +34,7 @@ class LibSodiumDecorator implements DecoratorInterface
     {
         $converteData = sodium_crypto_secretbox_open($data, $this->nonce, $this->key);
         if ($converteData === false) {
-            throw new Exception("Bad ciphertext");
+            throw new \Exception("Something goes wrong with your decryption.");
         }
 
         return json_decode($converteData, true);

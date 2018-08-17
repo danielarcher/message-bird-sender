@@ -51,13 +51,13 @@ class ReceiverController
         
         $splitedMessage = str_split($messageBody, $size);
         $total = count($splitedMessage);
-        
+        $ref = mt_rand(1, 255);
         foreach($splitedMessage as $key => $part)
         {
             yield [
                 'type' => 'binary',
                 'typeDetails' => [
-                    'udh' => (new Udh($total, ++$key))->toString(), 
+                    'udh' => (new Udh($total, ++$key, $ref))->toString(), 
                 ],
                 'body' => $part
             ];
