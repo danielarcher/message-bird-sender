@@ -18,17 +18,19 @@ $logger = new Logger($config['log-file']);
 $storage = new QueueStorage($config['queue-id']);
 $storage->setDecorator(new JsonDecorator());
 
-$sender = new Sender($messageBirdClient);
+$sender = new Sender($messageBirdClient, $config['limit-messages-per-second']);
 
 while (true) {
     $nextMessage = $storage->get();
+
+    /**
+     * Verify if have a next message
+     */
     if (empty($nextMessage)) {
-        
         /**
-         * Any messages to proccess, show bar and wait
+         * Any messages to proccess, wait
          */
-        echo progress_bar($storage->getTotal(), 100);
-        sleep($config['sleep-sec']);
+        $sender->wait();
         continue;
     }
 
@@ -39,30 +41,22 @@ while (true) {
         $message->setBinarySms($nextMessage['typeDetails']['udh'], $nextMessage['body']);
 
         $result = $sender->sendMessage($message);
+
+        http_response_code(201);
         $logger->info('Message sent! id: '. $result->getId());
+    } catch (\MessageBird\Exceptions\AuthenticateException $e) {
+        
+        http_response_code(401);
+        $logger->error($e->getMessage(), 401);
+    } catch (\MessageBird\Exceptions\BalanceException $e) {
+        
+        http_response_code(402);
+        $logger->error($e->getMessage(), 402);
     } catch (\Exception $e) {
-        $logger->error($e->getMessage());
-        echo "Error: ".$e->getMessage()."\n";
+
+        http_response_code(500);
+        $logger->error($e->getMessage(), 500);
     }
 
-        /**
-         * Show progressbar and wait
-         */
-        echo progress_bar($storage->getTotal(), 100);
-        sleep($config['sleep-sec']);
-        
-}
-/**
- * Generate a cli progressBar with very low complexity
- * 
- * @param  int     $done
- * @param  int     $total
- * @param  string  $info
- * @param  integer $width
- * @return string
- */
-function progress_bar(int $done, int $total, string $info="", $width=50): string {
-    $perc = round(($done * 100) / $total);
-    $bar = round(($width * $perc) / 100);
-    return sprintf(" -> Queue total: %s [%s %s]%s\r", $perc, str_repeat("#", $bar), str_repeat(" ", $width-$bar), $info);
+    $sender->wait();
 }
