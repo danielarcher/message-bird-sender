@@ -8,8 +8,9 @@ $env = getenv('APPLICATION_ENV') ?? 'development';
 $config = require __DIR__ . '/../config/' . $env . '.php';
 
 if ($_POST) {
+    $recipients = is_array($_POST['recipients']) ? $_POST['recipients'] : [$_POST['recipients']];
 
     $controller = new ReceiverController($config);
-    $controller->post($_POST['recipients'], $_POST['body']);
-    
+
+    echo $controller->post($recipients, $_POST['body']);
 }
