@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+
+    <testsuites>
+        <testsuite name="Message Bird Sender Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="tap" target="tests/_report/report.tap"/>
+        <log type="junit" target="tests/_report/report.junit.xml"/>
+        <log type="coverage-html" target="tests/_report/coverage"/>
+        <log type="coverage-text" target="tests/_report/coverage.txt"/>
+        <log type="coverage-clover" target="tests/_report/logs/clover.xml"/>
+    </logging>
+
+</phpunit>
