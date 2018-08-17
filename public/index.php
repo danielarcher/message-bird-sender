@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Decorator\JsonDecorator;
 use App\Decorator\LibSodiumDecorator;
 use App\Receiver;
 use App\Storage\QueueStorage;
@@ -27,8 +28,9 @@ if ($_POST) {
      * Decorator
      */
     $storage->setDecorator(new LibSodiumDecorator($config['sodium-key'], $config['sodium-nonce']));
+    #$storage->setDecorator(new JsonDecorator());
 
-    $controller = new Receiver($config, $storage, $decorator);
+    $controller = new Receiver($config, $storage);
     $response = $controller->post($recipients, $_POST['body']);
 
 }

@@ -11,7 +11,7 @@ class QueueStorage implements StorageInterface
 {
     const MSG_TYPE = 1;
 
-    protected $decorator;
+    public $decorator;
 
     /**
      * [__construct description]
