@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Decorator\JsonDecorator;
+use App\Decorator\LibSodiumDecorator;
 use App\Logger;
 use App\Sender;
 use App\Storage\QueueStorage;
@@ -11,16 +12,33 @@ use MessageBird\Objects\Message;
 
 $config = require __DIR__ . '/../config/' . getenv('APPLICATION_ENV') . '.php';
 
+
 $messageBirdClient = new Client($config['api-key']);
 
+/**
+ * Set Logger
+ */
 $logger = new Logger($config['log-file']);
 
+/**
+ * Storage Mode
+ */
 $storage = new QueueStorage($config['queue-id']);
-$storage->setDecorator(new JsonDecorator());
+
+/**
+ * Set Decorator
+ */
+$storage->setDecorator(new LibSodiumDecorator($config['sodium-key'], $config['sodium-nonce']));
 
 $sender = new Sender($messageBirdClient, $config['limit-messages-per-second']);
 
 while (true) {
+
+    /**
+     * Benchmark start
+     */
+    $rustart = getrusage();
+
     $nextMessage = $storage->get();
 
     /**
@@ -35,11 +53,18 @@ while (true) {
     }
 
     try {
+
+        /**
+         * Create the message entity
+         */
         $message = new Message();
         $message->originator = $nextMessage['originator'];
         $message->recipients = $nextMessage['recipients'];
         $message->setBinarySms($nextMessage['typeDetails']['udh'], $nextMessage['body']);
 
+        /**
+         * Send the mesage to the api-client
+         */
         $result = $sender->sendMessage($message);
 
         http_response_code(201);
@@ -58,5 +83,23 @@ while (true) {
         $logger->error($e->getMessage(), 500);
     }
 
+    /**
+     * Benchmark result
+     */
+    $ru = getrusage();
+    $logger->debug(sprintf('%s, takes %s ms for compute and spend %s ms in system calls',
+        get_class($decor),
+        rutime($ru, $rustart, "utime"),
+        rutime($ru, $rustart, "stime")
+    ));
+
     $sender->wait();
+}
+
+/**
+ * Benchmark helper function
+ */
+function rutime($ru, $rus, $index) {
+    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+     -  ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
 }
