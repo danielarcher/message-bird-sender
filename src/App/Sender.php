@@ -32,12 +32,20 @@ class Sender
         return $this->client->messages->create($message);
     }
 
-    public function wait()
+    /**
+     * Wait for the next loop
+     * @return void
+     */
+    public function wait(): void
     {
         usleep($this->calcWaitTime());
     }
 
-    public function calcWaitTime()
+    /**
+     * return the amount of time need to wait, based on the throughputLimit
+     * @return int
+     */
+    public function calcWaitTime(): int
     {
         return round(1000000 / $this->throughputLimit);
     }
