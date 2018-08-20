@@ -14,8 +14,8 @@ class QueueStorage implements StorageInterface
     public $decorator;
 
     /**
-     * [__construct description]
-     * @param int $queueSequence [description]
+     * constructor for the storage classe
+     * @param int $queueSequence 
      */
     public function __construct(int $queueSequence)
     {

@@ -14,6 +14,10 @@ class Logger
     
     const ERROR = 'error';
     
+    /**
+     * constructor of the logger class
+     * @param string $filePath [description]
+     */
     public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
@@ -61,7 +65,6 @@ class Logger
         
         if (false == $success) {
             throw new \Exception("Error saving the log file, please verify the configuration path");
-            
         }
     }
 }

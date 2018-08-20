@@ -10,6 +10,7 @@ use App\Decorator\DecoratorInterface;
 interface StorageInterface
 {
     public function setDecorator(DecoratorInterface $decorator);
+    
     /**
      * Add new itens on the storage
      * @param array $data 
